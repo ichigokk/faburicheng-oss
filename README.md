@@ -1,4 +1,11 @@
-# 短视频排期助手
+# 短视频排期助手 · Faburicheng
+
+*[English](#english) · 中文(下方)*
+
+<a name="english"></a>
+**English** — Faburicheng is a self-hosted scheduling and asset tool for short-video teams that run content for several client accounts at once. You describe what you shot in plain language ("filmed 5 videos for client A today, the first is a founder story…") and it parses the client, count, topics and content types, then slots each video into the publishing calendar based on that client's cadence and content-type rotation. You keep editing the schedule the same way — move, postpone, cancel, dedupe — by typing or speaking. It runs as a Web PWA and a WeChat Mini Program that share state, with a Node.js server that proxies the LLM calls so API keys never reach the browser. DeepSeek and Qwen are supported, with a local rule-based fallback when neither is available.
+
+---
 
 一个可自托管的短视频团队排期与素材管理工具。它面向需要同时管理多个客户账号的内容团队，提供 Web PWA 和微信小程序两种入口，并支持使用大模型解析自然语言排期指令。
 
