@@ -1,0 +1,30 @@
+name: Bug 报告
+description: 报告可复现的问题
+title: "[Bug] "
+labels:
+  - bug
+body:
+  - type: textarea
+    id: description
+    attributes:
+      label: 问题描述
+      description: 请说明实际行为和预期行为。
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: 复现步骤
+      description: 请按顺序列出复现步骤。
+    validations:
+      required: true
+  - type: input
+    id: environment
+    attributes:
+      label: 运行环境
+      description: 例如 Node.js 版本、浏览器或微信开发者工具版本。
+  - type: textarea
+    id: logs
+    attributes:
+      label: 补充信息
+      description: 请先移除密钥、令牌和用户数据。

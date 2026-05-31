@@ -1,0 +1,5 @@
+blank_issues_enabled: true
+contact_links:
+  - name: 安全漏洞
+    url: https://github.com/ichigokk/faburicheng-oss/security/advisories/new
+    about: 请使用私密报告功能提交安全漏洞。

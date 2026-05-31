@@ -1,0 +1,41 @@
+{
+  "pages": [
+    "pages/home/home",
+    "pages/stats/stats",
+    "pages/me/me",
+    "pages/login/login"
+  ],
+  "window": {
+    "backgroundTextStyle": "light",
+    "backgroundColor": "#f8efe8",
+    "navigationBarBackgroundColor": "#fff8ef",
+    "navigationBarTitleText": "排期助手",
+    "navigationBarTextStyle": "black"
+  },
+  "tabBar": {
+    "color": "#8b6066",
+    "selectedColor": "#8f4d5b",
+    "backgroundColor": "#fff8ef",
+    "borderStyle": "white",
+    "list": [
+      {
+        "pagePath": "pages/home/home",
+        "text": "首页"
+      },
+      {
+        "pagePath": "pages/stats/stats",
+        "text": "统计"
+      },
+      {
+        "pagePath": "pages/me/me",
+        "text": "我的"
+      }
+    ]
+  },
+  "sitemapLocation": "sitemap.json",
+  "permission": {
+    "scope.record": {
+      "desc": "录制语音用于自动排期解析"
+    }
+  }
+}

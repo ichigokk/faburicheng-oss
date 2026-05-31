@@ -1,0 +1,17 @@
+# 别把无关文件打进镜像
+node_modules
+.git
+.gitignore
+.env
+.env.local
+.env.example
+.DS_Store
+.claude
+.playwright-cli
+*.log
+data/
+icons/*.png
+
+# 文档
+*.md
+!DEPLOY.md

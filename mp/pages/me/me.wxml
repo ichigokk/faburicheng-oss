@@ -1,0 +1,95 @@
+<view class="me-wrap">
+  <view class="app-header">
+    <view class="header-text">
+      <text class="kicker">账号</text>
+      <text class="page-title">我的</text>
+    </view>
+  </view>
+
+  <!-- 登录态 -->
+  <view class="profile-panel">
+    <view wx:if="{{user}}">
+      <view class="section-head">
+        <text class="section-title">{{user.displayName || user.username}}</text>
+        <text class="pill ok">已登录</text>
+      </view>
+      <text class="muted">角色：{{user.role}}</text>
+      <view style="height: 16rpx;" />
+      <button class="text-button danger" bindtap="doLogout">退出登录</button>
+    </view>
+    <view wx:else>
+      <view class="section-head">
+        <text class="section-title">先登录</text>
+        <text class="muted">账号由管理员发放</text>
+      </view>
+      <view style="height: 12rpx;" />
+      <button class="primary-button" bindtap="goLogin">去登录</button>
+    </view>
+  </view>
+
+  <!-- 客户管理（仅登录态） -->
+  <view wx:if="{{user}}" class="profile-panel">
+    <view class="section-head">
+      <text class="section-title">客户管理</text>
+      <text class="muted">{{clients.length}} 个客户</text>
+    </view>
+
+    <view class="manage-add-entry" bindtap="toggleAddClient">
+      <view class="add-text">
+        <text class="add-title">新增客户</text>
+        <text class="muted">先建档，再绑账号</text>
+      </view>
+      <text class="add-arrow">{{showAddClient ? '收起' : '新增 ›'}}</text>
+    </view>
+
+    <view wx:if="{{showAddClient}}" class="client-form">
+      <input class="form-input" placeholder="客户名" data-field="clientName" value="{{form.clientName}}" bindinput="onFormInput" />
+      <view class="form-grid">
+        <input class="form-input" type="number" placeholder="几天一发" data-field="clientInterval" value="{{form.clientInterval}}" bindinput="onFormInput" />
+        <input class="form-input" placeholder="默认发布时间 17:00" data-field="clientTime" value="{{form.clientTime}}" bindinput="onFormInput" />
+      </view>
+      <input class="form-input" placeholder="内容类型，逗号或顿号分" data-field="clientTypes" value="{{form.clientTypes}}" bindinput="onFormInput" />
+      <input class="form-input" placeholder="抖音主页 URL，可不填" data-field="clientDouyinUrl" value="{{form.clientDouyinUrl}}" bindinput="onFormInput" />
+      <input class="form-input" placeholder="小红书主页 URL，可不填" data-field="clientXhsUrl" value="{{form.clientXhsUrl}}" bindinput="onFormInput" />
+      <input class="form-input" placeholder="视频号昵称，可不填" data-field="clientChannelsName" value="{{form.clientChannelsName}}" bindinput="onFormInput" />
+      <button class="primary-button" bindtap="saveClient" loading="{{saving}}" disabled="{{saving}}">加客户</button>
+    </view>
+
+    <view class="client-list">
+      <view wx:if="{{clients.length === 0}}" class="empty-state">还没客户</view>
+      <view wx:for="{{clients}}" wx:key="id" class="client-row">
+        <view class="avatar-mark"><text>{{item.name}}</text></view>
+        <view class="client-info">
+          <text class="client-name">{{item.name}}</text>
+          <text class="muted">每 {{item.publishIntervalDays}} 天 1 条 · {{item.defaultPublishTime}}</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- LLM 状态 -->
+  <view class="profile-panel">
+    <view class="section-head">
+      <text class="section-title">LLM 状态</text>
+      <text class="muted" wx:if="{{llmLoading}}">检查中…</text>
+      <text class="pill {{llmStatus.ok ? 'ok' : 'risk'}}" wx:elif="{{llmStatus}}">{{llmStatus.ok ? '可用' : '异常'}}</text>
+    </view>
+    <view wx:if="{{llmStatus && llmStatus.providers}}" class="llm-list">
+      <view wx:for="{{llmStatus.providers}}" wx:key="name" class="llm-row">
+        <view>
+          <text class="llm-name">{{item.name}}</text>
+          <text class="muted">{{item.role}} · {{item.model}}</text>
+        </view>
+        <text class="pill {{item.configured ? 'ok' : 'warn'}}">{{item.configured ? '已配置' : '未配置'}}</text>
+      </view>
+    </view>
+    <view wx:if="{{llmStatus && !llmStatus.ok && llmStatus.error}}" class="muted">{{llmStatus.error}}</view>
+    <view style="height: 12rpx;" />
+    <button class="text-button" bindtap="refreshLlmStatus">刷新</button>
+  </view>
+
+  <!-- ICP 备案 -->
+  <view class="icp-footer">
+    <text class="muted">豫ICP备2026018655号</text>
+  </view>
+</view>

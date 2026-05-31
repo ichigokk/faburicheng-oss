@@ -1,0 +1,14 @@
+.env
+.env.*
+!.env.example
+cloud-env.json
+*.zip
+node_modules/
+.DS_Store
+.playwright-cli/
+.claude/
+.preview/
+data/
+faburicheng.zip
+mp/project.private.config.json
+mp-preview-*.png

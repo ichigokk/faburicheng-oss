@@ -1,0 +1,13 @@
+<view class="page-wrap">
+  <view class="card">
+    <view class="section-head">
+      <text>登录</text>
+    </view>
+    <input class="input-base" placeholder="账号" bindinput="onUsername" value="{{username}}" />
+    <view style="height: 16rpx;" />
+    <input class="input-base" placeholder="密码" password type="text" bindinput="onPassword" value="{{password}}" />
+    <view style="height: 24rpx;" />
+    <button class="primary-button" bindtap="doLogin" loading="{{loading}}">登录</button>
+    <view wx:if="{{error}}" class="muted" style="margin-top: 16rpx; color: var(--red);">{{error}}</view>
+  </view>
+</view>

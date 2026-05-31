@@ -1,0 +1,28 @@
+{
+  "name": "短视频排期助手",
+  "short_name": "排期助手",
+  "description": "用对话管理你的客户拍摄和发布日程",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#f8efe8",
+  "theme_color": "#8f4d5b",
+  "lang": "zh-CN",
+  "icons": [
+    {
+      "src": "./icons/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "今天发什么",
+      "short_name": "今日",
+      "description": "查看今天的发布安排",
+      "url": "./?action=today"
+    }
+  ]
+}

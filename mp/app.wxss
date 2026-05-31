@@ -1,0 +1,94 @@
+/* 全局 wxss */
+page {
+  --bg: #f8efe8;
+  --surface: #fff8ef;
+  --surface-2: #f8eee5;
+  --surface-3: #fcf4ec;
+  --brand: #8f4d5b;
+  --brand-strong: #6b3641;
+  --brand-soft: #f1d6dc;
+  --amber: #e08f3c;
+  --amber-soft: #fce5cc;
+  --blue: #2f6fbb;
+  --blue-soft: #d6e7fa;
+  --red: #b33c4a;
+  --red-soft: #f6d3d7;
+  --line: #efd9da;
+  --line-strong: #e8c8cc;
+  --muted: #8b6066;
+  --text: #2b1a1d;
+  --text-soft: #5a3a40;
+  --radius-md: 16px;
+  --shadow-sm: 0 4px 12px rgba(143, 77, 91, 0.08);
+  background: var(--bg);
+  color: var(--text);
+  font-family: -apple-system, "PingFang SC", "Helvetica Neue", sans-serif;
+  font-size: 28rpx;
+}
+
+.page-wrap {
+  padding: 24rpx 28rpx;
+  min-height: 100vh;
+}
+
+.card {
+  background: var(--surface);
+  border-radius: var(--radius-md);
+  padding: 24rpx 24rpx;
+  border: 1rpx solid var(--line);
+  box-shadow: var(--shadow-sm);
+  margin-bottom: 20rpx;
+}
+
+.section-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16rpx;
+}
+
+.section-head text:first-child {
+  font-size: 32rpx;
+  font-weight: 700;
+}
+
+.muted {
+  color: var(--muted);
+  font-size: 24rpx;
+}
+
+.primary-button {
+  background: var(--brand);
+  color: white;
+  border: none;
+  border-radius: 999rpx;
+  padding: 18rpx 36rpx;
+  font-size: 28rpx;
+  font-weight: 700;
+}
+
+.text-button {
+  background: transparent;
+  color: var(--brand);
+  border: 1rpx solid var(--brand-soft);
+  border-radius: 999rpx;
+  padding: 14rpx 28rpx;
+  font-size: 26rpx;
+  font-weight: 600;
+}
+
+.input-base {
+  background: var(--surface-3);
+  border: 1rpx solid var(--line);
+  border-radius: 12rpx;
+  padding: 18rpx 22rpx;
+  font-size: 28rpx;
+}
+
+.empty-state {
+  padding: 32rpx 16rpx;
+  border: 2rpx dashed var(--line-strong);
+  border-radius: var(--radius-md);
+  text-align: center;
+  color: var(--muted);
+}

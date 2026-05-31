@@ -1,0 +1,221 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>账号后台 · 短视频排期助手</title>
+    <link rel="icon" href="data:," />
+    <style>
+      :root {
+        --bg: #f6f1ee;
+        --surface: #ffffff;
+        --surface-2: #efe5e0;
+        --line: #e5d3cb;
+        --text: #2a1f29;
+        --muted: #8b7a83;
+        --brand: #8f4d5b;
+        --brand-strong: #67303d;
+        --brand-soft: #f3e1e5;
+        --danger: #b54a4a;
+        --danger-soft: #fde1e1;
+      }
+      * { box-sizing: border-box; }
+      body {
+        margin: 0;
+        min-height: 100vh;
+        font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Helvetica Neue", Inter, sans-serif;
+        background: var(--bg);
+        color: var(--text);
+        padding: 32px 16px 64px;
+      }
+      .wrap { max-width: 760px; margin: 0 auto; display: grid; gap: 18px; }
+      header h1 { margin: 0 0 6px; font-size: 24px; letter-spacing: -0.3px; }
+      header p { margin: 0; color: var(--muted); font-size: 13px; }
+      .panel {
+        background: var(--surface);
+        border: 1px solid var(--line);
+        border-radius: 18px;
+        padding: 18px;
+        box-shadow: 0 8px 24px rgba(143, 77, 91, 0.08);
+      }
+      .panel h2 { margin: 0 0 12px; font-size: 16px; font-weight: 700; }
+      .icp-footer {
+        margin-top: 24px;
+        padding: 16px 12px calc(16px + env(safe-area-inset-bottom));
+        text-align: center;
+        font-size: 12px;
+        color: var(--muted);
+      }
+      .icp-footer a { color: inherit; text-decoration: none; }
+      .icp-footer a:hover { text-decoration: underline; }
+      label { display: block; font-size: 12px; color: var(--muted); font-weight: 600; margin-bottom: 4px; }
+      input, select {
+        width: 100%;
+        min-height: 38px;
+        padding: 0 12px;
+        background: var(--surface-2);
+        border: 1px solid transparent;
+        border-radius: 10px;
+        font: inherit;
+        color: var(--text);
+        outline: none;
+      }
+      input:focus, select:focus { border-color: var(--brand); background: white; }
+      .row { display: grid; gap: 10px; margin-bottom: 10px; }
+      .row.row-2 { grid-template-columns: 1fr 1fr; }
+      button {
+        cursor: pointer;
+        border: 0;
+        border-radius: 999px;
+        padding: 0 18px;
+        min-height: 36px;
+        font-weight: 700;
+        font: inherit;
+      }
+      .primary { background: linear-gradient(135deg, var(--brand), var(--brand-strong)); color: white; }
+      .ghost { background: transparent; color: var(--muted); padding: 0 8px; }
+      .danger { background: var(--danger-soft); color: var(--danger); }
+      .session-line {
+        display: flex;
+        justify-content: space-between;
+        gap: 12px;
+        align-items: center;
+        margin-bottom: 12px;
+      }
+      .session-line strong { font-size: 14px; }
+      .user-row {
+        display: grid;
+        grid-template-columns: 1fr auto;
+        gap: 10px;
+        padding: 12px 14px;
+        border-radius: 12px;
+        background: var(--surface-2);
+        align-items: center;
+      }
+      .user-row + .user-row { margin-top: 8px; }
+      .user-row strong { display: block; font-size: 14px; }
+      .user-row span { color: var(--muted); font-size: 12px; }
+      .role-chip {
+        display: inline-block;
+        margin-left: 6px;
+        padding: 1px 8px;
+        border-radius: 999px;
+        background: var(--brand-soft);
+        color: var(--brand-strong);
+        font-size: 11px;
+        font-weight: 700;
+      }
+      .toast {
+        position: fixed;
+        left: 50%;
+        bottom: 28px;
+        transform: translateX(-50%);
+        padding: 10px 18px;
+        border-radius: 999px;
+        background: var(--text);
+        color: white;
+        font-size: 13px;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.2s;
+      }
+      .toast.show { opacity: 0.9; }
+      .empty { color: var(--muted); font-size: 13px; padding: 12px 0; text-align: center; }
+      .token-bar { display: grid; grid-template-columns: 1fr auto; gap: 8px; align-items: end; }
+      .muted { color: var(--muted); font-size: 12px; }
+      details {
+        margin-top: 14px;
+        padding-top: 14px;
+        border-top: 1px solid var(--line);
+      }
+      summary {
+        cursor: pointer;
+        color: var(--muted);
+        font-size: 12px;
+        font-weight: 700;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <header>
+        <h1>账号后台</h1>
+        <p>只在这里生成给运营用的登录账号，前台没有注册入口。</p>
+      </header>
+
+      <section class="panel" id="loginPanel">
+        <h2>管理员登录</h2>
+        <div class="session-line" id="sessionLine" hidden>
+          <strong id="sessionName"></strong>
+          <button class="ghost" id="logoutBtn" type="button">退出</button>
+        </div>
+        <form id="loginForm">
+          <div class="row row-2">
+            <div>
+              <label>账号</label>
+              <input id="loginUsername" name="username" autocomplete="username" required placeholder="管理员账号" />
+            </div>
+            <div>
+              <label>密码</label>
+              <input id="loginPassword" name="password" type="password" autocomplete="current-password" required placeholder="管理员密码" />
+            </div>
+          </div>
+          <button class="primary" type="submit">进入后台</button>
+        </form>
+        <p class="muted" id="loginStatus">后台只认管理员账号。</p>
+
+        <details>
+          <summary>还没有管理员账号？用初始化令牌</summary>
+          <div class="token-bar">
+            <div>
+              <label>服务端 <code>.env</code> 里的 <code>ADMIN_TOKEN</code></label>
+              <input id="tokenInput" type="password" autocomplete="off" placeholder="粘贴初始化令牌" />
+            </div>
+            <button class="primary" id="tokenSave" type="button">使用</button>
+          </div>
+          <p class="muted" id="tokenStatus">只用于创建第一个管理员。</p>
+        </details>
+      </section>
+
+      <section class="panel" id="createPanel" hidden>
+        <h2>生成新账号</h2>
+        <form id="createForm">
+          <div class="row row-2">
+            <div>
+              <label>账号（英文/数字）</label>
+              <input name="username" autocomplete="off" required placeholder="例：amy" />
+            </div>
+            <div>
+              <label>密码（≥ 6 位）</label>
+              <input name="password" autocomplete="new-password" required minlength="6" placeholder="给运营本人发" />
+            </div>
+          </div>
+          <div class="row row-2">
+            <div>
+              <label>显示名</label>
+              <input name="displayName" autocomplete="off" placeholder="例：客户经理 Amy" />
+            </div>
+            <div>
+              <label>角色</label>
+              <select name="role">
+                <option value="member">运营</option>
+                <option value="admin">管理员</option>
+              </select>
+            </div>
+          </div>
+          <button class="primary" type="submit">生成账号</button>
+        </form>
+      </section>
+
+      <section class="panel" id="listPanel" hidden>
+        <h2>账号列表</h2>
+        <div id="userList"></div>
+      </section>
+      <footer class="icp-footer">
+        <a href="https://beian.miit.gov.cn/" target="_blank" rel="noopener noreferrer">豫ICP备2026018655号</a>
+      </footer>
+    </div>
+    <div class="toast" id="toast"></div>
+    <script src="./admin.js"></script>
+  </body>
+</html>

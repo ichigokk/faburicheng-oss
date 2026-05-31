@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#a35e6c"/>
+      <stop offset="1" stop-color="#6b3641"/>
+    </linearGradient>
+  </defs>
+  <rect width="512" height="512" rx="112" fill="url(#bg)"/>
+  <!-- 简化版相机+日历组合 -->
+  <g fill="#fff">
+    <!-- 日历主体 -->
+    <rect x="120" y="156" width="272" height="220" rx="28" fill="#fff8ef"/>
+    <rect x="120" y="156" width="272" height="64" rx="28" fill="#8f4d5b"/>
+    <circle cx="184" cy="138" r="14" fill="#fff8ef"/>
+    <circle cx="328" cy="138" r="14" fill="#fff8ef"/>
+    <rect x="176" y="118" width="16" height="42" rx="6" fill="#fff8ef"/>
+    <rect x="320" y="118" width="16" height="42" rx="6" fill="#fff8ef"/>
+    <!-- 网格点 -->
+    <circle cx="170" cy="260" r="10" fill="#d18a96"/>
+    <circle cx="226" cy="260" r="10" fill="#d18a96"/>
+    <circle cx="282" cy="260" r="10" fill="#e7b46c" />
+    <circle cx="338" cy="260" r="10" fill="#d18a96"/>
+    <circle cx="170" cy="312" r="10" fill="#d18a96"/>
+    <circle cx="226" cy="312" r="10" fill="#e7b46c"/>
+    <circle cx="282" cy="312" r="10" fill="#d18a96"/>
+    <circle cx="338" cy="312" r="10" fill="#d18a96"/>
+  </g>
+</svg>

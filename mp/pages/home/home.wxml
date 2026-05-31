@@ -1,0 +1,297 @@
+<view class="home-wrap" bindtap="onPageTap">
+  <!-- 未登录态 -->
+  <view wx:if="{{!loggedIn}}" class="empty-state">
+    <text>先登录</text>
+    <view style="height: 20rpx;" />
+    <button class="primary-button" bindtap="goLogin">去"我的"登录</button>
+  </view>
+
+  <block wx:if="{{loggedIn}}">
+    <!-- 顶部 kicker + 回到今天 -->
+    <view class="app-header">
+      <view class="header-text">
+        <text class="kicker">{{isOnToday ? '今天' : '其他时段'}}</text>
+        <text class="page-title">发布日程</text>
+      </view>
+      <view wx:if="{{!isOnToday}}" class="back-today" bindtap="goToday">回到今天</view>
+    </view>
+
+    <!-- 视图切换 + 期 导航 -->
+    <view class="home-controls">
+      <view class="segmented" role="tablist">
+        <view class="seg-btn {{viewMode==='days' ? 'active' : ''}}" data-mode="days" bindtap="setViewMode">三天</view>
+        <view class="seg-btn {{viewMode==='week' ? 'active' : ''}}" data-mode="week" bindtap="setViewMode">周</view>
+        <view class="seg-btn {{viewMode==='month' ? 'active' : ''}}" data-mode="month" bindtap="setViewMode">月</view>
+      </view>
+      <view class="period-controls">
+        <view class="icon-button" data-dir="-1" bindtap="shiftPeriod">‹</view>
+        <text class="period-label">{{periodLabel}}</text>
+        <view class="icon-button" data-dir="1" bindtap="shiftPeriod">›</view>
+      </view>
+    </view>
+
+    <!-- 发布提醒条 -->
+    <view wx:if="{{alert.total > 0}}" class="publish-alert">
+      <view class="alert-head">
+        <view>
+          <text class="alert-strong">{{alert.total}} 项待处理</text>
+          <text class="alert-sub">拍摄/发布需要确认</text>
+        </view>
+      </view>
+      <view class="alert-list">
+        <view
+          wx:for="{{alert.top}}"
+          wx:key="id"
+          class="alert-row"
+          data-date="{{item.publishDate}}"
+          bindtap="jumpToDate"
+        >
+          <text class="alert-time">{{item.publishTime}}</text>
+          <text class="alert-mid">· {{item.clientName}} · {{item.topic}}</text>
+          <text class="alert-arrow">›</text>
+        </view>
+        <view wx:if="{{alert.total > 3}}" class="alert-more">还有 {{alert.total - 3}} 条…</view>
+      </view>
+    </view>
+
+    <!-- 三天视图 -->
+    <block wx:if="{{scheduleMode === 'days'}}">
+      <view class="day-card {{item.isToday ? 'is-today' : ''}}" wx:for="{{days}}" wx:key="date">
+        <view class="day-card-head">
+          <text class="day-title">{{item.title}}</text>
+          <text class="day-label">{{item.label}}</text>
+        </view>
+        <view class="event-list">
+          <view wx:if="{{item.isEmpty}}" class="empty-state inner">今天不发</view>
+          <view
+            wx:for="{{item.events}}"
+            wx:for-item="ev"
+            wx:key="id"
+            class="event-row {{ev.kind==='shoot' ? 'shoot-row' : ''}} {{ev.planned ? 'planned-row' : ''}}"
+          >
+            <view class="avatar-mark" style="background:{{ev.avatar.color}}">
+              <image wx:if="{{ev.avatar.url}}" src="{{ev.avatar.url}}" mode="aspectFill" />
+              <text wx:else>{{ev.avatar.initial}}</text>
+            </view>
+            <view class="event-main">
+              <text class="event-title">{{ev.title}}</text>
+              <text class="event-sub">{{ev.subtitle}}</text>
+            </view>
+            <text class="event-time">{{ev.time}}</text>
+            <view class="event-actions">
+              <button size="mini" plain="true" data-kind="{{ev.kind}}" data-id="{{ev.id}}" data-date="{{item.date}}" data-title="{{ev.title}}" bindtap="editEvent">编辑</button>
+              <button size="mini" plain="true" class="danger" data-kind="{{ev.kind}}" data-id="{{ev.id}}" bindtap="deleteEvent">删除</button>
+            </view>
+          </view>
+        </view>
+      </view>
+    </block>
+
+    <!-- 周视图 -->
+    <block wx:if="{{scheduleMode === 'week'}}">
+      <view class="week-panel">
+        <view class="week-grid">
+          <view
+            wx:for="{{weekCells}}"
+            wx:key="date"
+            class="week-day {{item.isToday ? 'is-today' : ''}} {{item.isSelected ? 'is-selected' : ''}}"
+            data-date="{{item.date}}"
+            bindtap="openDate"
+          >
+            <view class="week-head">
+              <text class="week-num">{{item.day}}</text>
+              <text class="week-wkd">{{item.weekChar}}</text>
+            </view>
+            <view class="dot-stack">
+              <view wx:for="{{item.dots}}" wx:for-item="d" wx:key="*this" class="calendar-avatar" style="background:{{d.color}}">
+                <image wx:if="{{d.url}}" src="{{d.url}}" mode="aspectFill" />
+                <text wx:else>{{d.initial}}</text>
+              </view>
+              <view
+                wx:for="{{item.shootDots}}"
+                wx:for-item="s"
+                wx:key="*this"
+                class="calendar-avatar is-shoot"
+                style="background:{{s.color}}"
+              >
+                <image wx:if="{{s.url}}" src="{{s.url}}" mode="aspectFill" />
+                <text wx:else>{{s.initial}}</text>
+              </view>
+            </view>
+          </view>
+        </view>
+      </view>
+      <view wx:if="{{inlineDay}}" class="day-card inline-day">
+        <view class="day-card-head">
+          <text class="day-title">{{inlineDay.title}}</text>
+          <text class="day-label">{{inlineDay.label}}</text>
+        </view>
+        <view class="event-list">
+          <view wx:if="{{inlineDay.isEmpty}}" class="empty-state inner">今天不发</view>
+          <view
+            wx:for="{{inlineDay.events}}"
+            wx:for-item="ev"
+            wx:key="id"
+            class="event-row {{ev.kind==='shoot' ? 'shoot-row' : ''}} {{ev.planned ? 'planned-row' : ''}}"
+          >
+            <view class="avatar-mark" style="background:{{ev.avatar.color}}">
+              <image wx:if="{{ev.avatar.url}}" src="{{ev.avatar.url}}" mode="aspectFill" />
+              <text wx:else>{{ev.avatar.initial}}</text>
+            </view>
+            <view class="event-main">
+              <text class="event-title">{{ev.title}}</text>
+              <text class="event-sub">{{ev.subtitle}}</text>
+            </view>
+            <text class="event-time">{{ev.time}}</text>
+            <view class="event-actions">
+              <button size="mini" plain="true" data-kind="{{ev.kind}}" data-id="{{ev.id}}" data-date="{{inlineDay.date}}" data-title="{{ev.title}}" bindtap="editEvent">编辑</button>
+              <button size="mini" plain="true" class="danger" data-kind="{{ev.kind}}" data-id="{{ev.id}}" bindtap="deleteEvent">删除</button>
+            </view>
+          </view>
+        </view>
+      </view>
+    </block>
+
+    <!-- 月视图 -->
+    <block wx:if="{{scheduleMode === 'month'}}">
+      <view class="month-panel">
+        <view class="month-grid">
+          <view class="weekday" wx:for="{{['一','二','三','四','五','六','日']}}" wx:key="*this">{{item}}</view>
+        </view>
+        <view class="month-grid month-grid-days">
+          <view
+            wx:for="{{monthCells}}"
+            wx:key="date"
+            class="month-day {{item.muted ? 'muted' : ''}} {{item.isToday ? 'is-today' : ''}} {{item.isSelected ? 'is-selected' : ''}}"
+            data-date="{{item.date}}"
+            bindtap="openDate"
+          >
+            <text class="month-num">{{item.day}}</text>
+            <view class="dot-stack">
+              <view wx:for="{{item.dots}}" wx:for-item="d" wx:key="*this" class="calendar-avatar small" style="background:{{d.color}}">
+                <image wx:if="{{d.url}}" src="{{d.url}}" mode="aspectFill" />
+                <text wx:else>{{d.initial}}</text>
+              </view>
+              <view
+                wx:for="{{item.shootDots}}"
+                wx:for-item="s"
+                wx:key="*this"
+                class="calendar-avatar small is-shoot"
+                style="background:{{s.color}}"
+              >
+                <image wx:if="{{s.url}}" src="{{s.url}}" mode="aspectFill" />
+                <text wx:else>{{s.initial}}</text>
+              </view>
+            </view>
+          </view>
+        </view>
+      </view>
+      <view wx:if="{{inlineDay}}" class="day-card inline-day">
+        <view class="day-card-head">
+          <text class="day-title">{{inlineDay.title}}</text>
+          <text class="day-label">{{inlineDay.label}}</text>
+        </view>
+        <view class="event-list">
+          <view wx:if="{{inlineDay.isEmpty}}" class="empty-state inner">今天不发</view>
+          <view
+            wx:for="{{inlineDay.events}}"
+            wx:for-item="ev"
+            wx:key="id"
+            class="event-row {{ev.kind==='shoot' ? 'shoot-row' : ''}} {{ev.planned ? 'planned-row' : ''}}"
+          >
+            <view class="avatar-mark" style="background:{{ev.avatar.color}}">
+              <image wx:if="{{ev.avatar.url}}" src="{{ev.avatar.url}}" mode="aspectFill" />
+              <text wx:else>{{ev.avatar.initial}}</text>
+            </view>
+            <view class="event-main">
+              <text class="event-title">{{ev.title}}</text>
+              <text class="event-sub">{{ev.subtitle}}</text>
+            </view>
+            <text class="event-time">{{ev.time}}</text>
+            <view class="event-actions">
+              <button size="mini" plain="true" data-kind="{{ev.kind}}" data-id="{{ev.id}}" data-date="{{inlineDay.date}}" data-title="{{ev.title}}" bindtap="editEvent">编辑</button>
+              <button size="mini" plain="true" class="danger" data-kind="{{ev.kind}}" data-id="{{ev.id}}" bindtap="deleteEvent">删除</button>
+            </view>
+          </view>
+        </view>
+      </view>
+    </block>
+
+    <!-- 命令栏：浮窗 + 输入合并为一体容器 -->
+    <view class="command-dock {{chatExpanded ? 'has-chat' : ''}} {{commandBallMode && !chatExpanded ? 'dock-ball' : ''}}" catchtap="noop">
+      <view wx:if="{{chatExpanded}}" class="chat-panel">
+        <view class="chat-panel-head">
+          <text class="chat-panel-title">对话</text>
+        </view>
+        <scroll-view
+          class="chat-panel-body"
+          scroll-y
+          scroll-into-view="{{chatAutoScrollKey}}"
+          scroll-with-animation
+          enhanced
+          show-scrollbar="{{false}}"
+        >
+          <view
+            wx:for="{{chatMessages}}"
+            wx:key="key"
+            id="{{item.key}}"
+            class="chat-bubble {{item.role}}"
+          >
+            <text>{{item.content}}</text>
+          </view>
+          <view wx:if="{{sending || transcribing}}" class="chat-bubble assistant typing">
+            <text>{{transcribing ? '识别中…' : '我想一下…'}}</text>
+          </view>
+          <view wx:if="{{pendingClientPrompt}}" class="chat-bubble assistant action-bubble">
+            <text>「{{pendingClientPrompt.rawName}}」我还没见过，是新客户还是已有客户别名？</text>
+            <view class="action-options">
+              <button class="action-option primary" data-action="create" bindtap="onClientPromptAction">加新客户</button>
+              <button
+                wx:for="{{pendingClientPrompt.candidates}}"
+                wx:key="id"
+                class="action-option"
+                data-action="alias"
+                data-client-id="{{item.id}}"
+                bindtap="onClientPromptAction"
+              >是「{{item.name}}」的别名</button>
+              <button class="action-option ghost" data-action="cancel" bindtap="onClientPromptAction">算了</button>
+            </view>
+          </view>
+        </scroll-view>
+      </view>
+      <!-- 单轮：浮窗收起时，把最近一次反馈放在输入框上方 -->
+      <view wx:if="{{!chatExpanded && reply}}" class="cmd-reply-inline">
+        <text>{{reply}}</text>
+      </view>
+      <!-- 对话入口（多轮收起时） -->
+      <view
+        wx:if="{{chatMessages.length > 1 && !chatExpanded}}"
+        class="chat-toggle"
+        bindtap="toggleChatPanel"
+      >对话 {{chatMessages.length}} ›</view>
+      <!-- 单行胶囊输入条 -->
+      <view class="cmd-bar">
+        <textarea
+          class="cmd-textarea"
+          placeholder="跟我说，比如：明天给涂老师拍 3 条口播"
+          value="{{commandText}}"
+          bindinput="onCmdInput"
+          maxlength="2000"
+          auto-height
+          disabled="{{recording || transcribing}}"
+        />
+        <view class="mic-btn {{recording ? 'recording' : ''}}" catchtap="toggleTalk">{{recording ? '●' : '🎤'}}</view>
+        <button
+          class="send-btn"
+          catchtap="sendCommand"
+          loading="{{sending || transcribing}}"
+          disabled="{{sending || transcribing || recording}}"
+        >发送</button>
+      </view>
+      <!-- 滚动悬浮球 -->
+      <view class="command-ball" catchtap="exitBall">
+        <text class="command-ball-icon">💬</text>
+      </view>
+    </view>
+  </block>
+</view>

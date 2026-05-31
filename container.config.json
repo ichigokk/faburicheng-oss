@@ -1,0 +1,36 @@
+{
+  "$schema": "https://qcloud-cloudbase.github.io/cloudrun/container.config.schema.json",
+  "description": "短视频排期助手 · 微信云托管配置",
+  "containerPort": 80,
+  "minNum": 0,
+  "maxNum": 2,
+  "cpu": 0.25,
+  "mem": 0.5,
+  "policyType": "cpu",
+  "policyThreshold": 60,
+  "healthCheck": {
+    "type": "HttpGet",
+    "path": "/healthz",
+    "port": 80
+  },
+  "volumeMounts": [
+    {
+      "name": "persistent-data",
+      "mountPath": "/app/persistent/data",
+      "subPath": "fbc-data"
+    }
+  ],
+  "envParams": {
+    "PORT": "80",
+    "HOST": "0.0.0.0",
+    "DATA_DIR": "/app/persistent/data",
+    "DEEPSEEK_API_KEY": "",
+    "DEEPSEEK_BASE_URL": "https://api.deepseek.com",
+    "DEEPSEEK_MODEL": "deepseek-v4-pro",
+    "DASHSCOPE_API_KEY": "",
+    "QWEN_BASE_URL": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+    "QWEN_MODEL": "qwen3.7-max",
+    "TIKHUB_TOKEN": "",
+    "TIKHUB_BASE_URL": "https://api.tikhub.io"
+  }
+}

@@ -1,0 +1,133 @@
+<view class="stats-wrap">
+  <view wx:if="{{!loggedIn}}" class="empty-state">
+    <text>先登录</text>
+    <view style="height: 20rpx;" />
+    <button class="primary-button" bindtap="goLogin">去"我的"登录</button>
+  </view>
+
+  <block wx:if="{{loggedIn}}">
+    <!-- 列表态 -->
+    <block wx:if="{{!detail}}">
+      <view class="app-header">
+        <view class="header-text">
+          <text class="kicker">总览</text>
+          <text class="page-title">统计</text>
+        </view>
+      </view>
+
+      <view class="overview-card">
+        <view class="ov-cell">
+          <text class="mini-label">本月拍摄</text>
+          <text class="ov-num">{{overview.monthShoots}}</text>
+        </view>
+        <view class="ov-cell">
+          <text class="mini-label">未发内容</text>
+          <text class="ov-num">{{overview.totalUnposted}}</text>
+        </view>
+        <view class="ov-cell">
+          <text class="mini-label">需关注</text>
+          <text class="ov-num warn">{{overview.riskCount}}</text>
+        </view>
+      </view>
+
+      <view class="section-head">
+        <text class="section-title">客户统计</text>
+        <text class="muted">{{summary}}</text>
+      </view>
+
+      <view wx:if="{{rows.length === 0}}" class="empty-state">还没客户，去"我的 → 客户管理"添加</view>
+
+      <view
+        wx:for="{{rows}}"
+        wx:key="clientId"
+        class="stat-card"
+        data-id="{{item.clientId}}"
+        bindtap="openDetail"
+      >
+        <view class="stat-head">
+          <view class="avatar-mark md" style="background:#8f4d5b"><text>{{item.name}}</text></view>
+          <view class="stat-head-text">
+            <text class="stat-name">{{item.name}}</text>
+            <text class="muted">每 {{item.publishIntervalDays}} 天 1 条 · {{item.defaultPublishTime}}</text>
+          </view>
+          <text class="pill {{item.statusKind}}">{{item.statusLabel}}</text>
+        </view>
+
+        <view class="stock-line">
+          <view class="stock-num">
+            <text class="big">{{item.coverDays}}</text>
+            <text class="mini-label">可发天数</text>
+          </view>
+          <view class="progress-track">
+            <view class="progress-fill" style="width:{{item.progressPercent}}%"></view>
+          </view>
+        </view>
+
+        <view class="stat-metrics">
+          <view class="metric"><text class="big">{{item.monthShoots}}</text><text class="mini-label">本月拍</text></view>
+          <view class="metric"><text class="big">{{item.monthPublished}}</text><text class="mini-label">本月发</text></view>
+          <view class="metric"><text class="big">{{item.unposted}}</text><text class="mini-label">未发</text></view>
+        </view>
+
+        <view class="deadline">
+          <text>库存未排：{{item.stock}} 条</text>
+          <text class="strong">最晚 {{item.shootBefore}} 拍摄</text>
+        </view>
+      </view>
+    </block>
+
+    <!-- 详情态 -->
+    <block wx:if="{{detail}}">
+      <view class="app-header detail-header">
+        <view class="back-button" bindtap="closeDetail">‹ 返回</view>
+        <text class="page-title">{{detail.name}}</text>
+      </view>
+
+      <view class="detail-hero">
+        <view class="avatar-mark lg" style="background:#8f4d5b"><text>{{detail.name}}</text></view>
+        <view class="hero-text">
+          <text class="hero-name">{{detail.name}}</text>
+          <text class="muted">每 {{detail.publishIntervalDays}} 天 1 条 · 默认 {{detail.defaultPublishTime}}</text>
+          <view class="hero-cover">
+            <text class="hero-num">{{detail.coverDays}}</text>
+            <text class="muted">天可发</text>
+            <text class="pill {{detail.statusKind}} hero-pill">{{detail.statusLabel}}</text>
+          </view>
+          <text class="muted" wx:if="{{detail.contentTypes}}">{{detail.contentTypes}}</text>
+        </view>
+      </view>
+
+      <view class="detail-section">
+        <text class="section-title">绑定平台</text>
+        <view wx:if="{{detail.accounts.length === 0}}" class="muted">还没绑定平台</view>
+        <view wx:for="{{detail.accounts}}" wx:key="uniqueId" class="account-row">
+          <text class="platform-tag">{{item.platform}}</text>
+          <text class="account-nick">{{item.nickname || '—'}}</text>
+          <text class="muted" wx:if="{{item.uniqueId}}">{{item.uniqueId}}</text>
+        </view>
+      </view>
+
+      <view class="detail-section">
+        <text class="section-title">接下来要发</text>
+        <view wx:if="{{detail.nextSlots.length === 0}}" class="muted">暂无排期</view>
+        <view wx:for="{{detail.nextSlots}}" wx:key="id" class="event-row">
+          <view class="event-main">
+            <text class="event-title">{{item.topic}}</text>
+            <text class="event-sub">{{item.publishDate}} {{item.publishTime}} · {{item.contentType}} · {{item.locked ? '已锁定' : '自动'}}</text>
+          </view>
+        </view>
+      </view>
+
+      <view class="detail-section">
+        <text class="section-title">最近拍摄</text>
+        <view wx:if="{{detail.recentShoots.length === 0}}" class="muted">暂无拍摄记录</view>
+        <view wx:for="{{detail.recentShoots}}" wx:key="id" class="event-row">
+          <view class="event-main">
+            <text class="event-title">{{item.shootDate}} · 拍 {{item.shootCount}} 条</text>
+            <text class="event-sub">{{item.summary}}</text>
+          </view>
+        </view>
+      </view>
+    </block>
+  </block>
+</view>

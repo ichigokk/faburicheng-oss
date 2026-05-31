@@ -1,0 +1,153 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="theme-color" content="#8f4d5b" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <meta name="apple-mobile-web-app-title" content="排期助手" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <title>短视频排期助手</title>
+    <link rel="manifest" href="./manifest.json" />
+    <link rel="icon" type="image/svg+xml" href="./icons/icon.svg" />
+    <link rel="stylesheet" href="./styles-v2.css" />
+  </head>
+  <body>
+    <div class="mini-app">
+      <header class="app-header">
+        <button id="backButton" class="back-button hidden" type="button" aria-label="返回">‹</button>
+        <div>
+          <p id="pageKicker">今天</p>
+          <h1 id="pageTitle">发布日程</h1>
+        </div>
+        <button id="todayButton" class="text-button" type="button">回到今天</button>
+      </header>
+
+      <main>
+        <section id="homePage" class="page active">
+          <section id="publishAlertBanner" class="publish-alert-banner hidden"></section>
+          <div class="home-controls">
+            <div class="segmented" role="tablist" aria-label="日历视图">
+              <button class="active" type="button" data-view="days">三天</button>
+              <button type="button" data-view="week">周</button>
+              <button type="button" data-view="month">月</button>
+            </div>
+            <div class="period-controls">
+              <button id="prevPeriod" class="icon-button" type="button" aria-label="上一段">‹</button>
+              <span id="periodLabel"></span>
+              <button id="nextPeriod" class="icon-button" type="button" aria-label="下一段">›</button>
+            </div>
+          </div>
+
+          <div id="homeSchedule" class="schedule-view"></div>
+        </section>
+
+        <section id="statsPage" class="page">
+          <div id="statsOverview" class="stats-overview"></div>
+          <div id="statsListPanel">
+            <div class="section-head">
+              <h2>客户统计</h2>
+              <span id="statsSummary"></span>
+            </div>
+            <div id="statsList" class="stats-list"></div>
+          </div>
+          <div id="clientDetail" class="client-detail hidden"></div>
+        </section>
+
+        <section id="mePage" class="page">
+          <section id="loginPanel" class="profile-panel"></section>
+
+          <section id="orgPanel" class="profile-panel hidden"></section>
+
+          <section id="todoPanel" class="profile-panel hidden"></section>
+
+          <section id="managePanel" class="profile-panel hidden"></section>
+
+          <section id="llmPanel" class="profile-panel">
+            <div class="section-head">
+              <h2>LLM 状态</h2>
+              <span id="llmOverall">检查中</span>
+            </div>
+            <div id="llmStatus" class="llm-status"></div>
+          </section>
+        </section>
+      </main>
+
+      <div id="chatBackdrop" class="chat-backdrop hidden"></div>
+      <section id="commandDock" class="command-dock">
+        <section id="chatPanel" class="chat-panel hidden" aria-label="对话浮窗">
+          <header class="chat-panel-head">
+            <h2>对话</h2>
+          </header>
+          <div id="chatPanelBody" class="chat-panel-body"></div>
+        </section>
+        <button id="chatToggleButton" class="chat-toggle hidden" type="button">对话 0 ›</button>
+        <div id="commandResult" class="command-result"></div>
+        <div id="commandBar" class="command-bar text-mode">
+          <button id="inputModeButton" class="mode-button voice-mode-icon" type="button" aria-label="切换到语音">
+            <svg class="mode-svg mic-svg" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M12 4.75a3.25 3.25 0 0 0-3.25 3.25v4a3.25 3.25 0 0 0 6.5 0V8A3.25 3.25 0 0 0 12 4.75Z" />
+              <path d="M6.75 11.25v.75a5.25 5.25 0 0 0 10.5 0v-.75" />
+              <path d="M12 17.25v2.5M8.75 19.75h6.5" />
+            </svg>
+            <svg class="mode-svg keyboard-svg" viewBox="0 0 24 24" aria-hidden="true">
+              <rect x="4.75" y="7" width="14.5" height="10" rx="2" />
+              <path d="M7.5 10h.01M10.5 10h.01M13.5 10h.01M16.5 10h.01M7.5 13h.01M10.5 13h6" />
+            </svg>
+          </button>
+          <div class="text-entry">
+            <textarea
+              id="commandInput"
+              rows="1"
+            ></textarea>
+          </div>
+          <button id="holdToTalk" class="hold-button" type="button">按住 说话</button>
+          <button id="runCommand" class="send-button" type="button" aria-label="发送">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M5 12 19 5l-4.2 14-3.1-5.6L5 12Z" />
+              <path d="m11.7 13.4 3.1-3.1" />
+            </svg>
+          </button>
+        </div>
+        <button id="commandBall" class="command-ball" type="button" aria-label="展开输入框">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M6.5 5.5h11A2.5 2.5 0 0 1 20 8v6a2.5 2.5 0 0 1-2.5 2.5H10l-4 3v-3h-.5A2.5 2.5 0 0 1 3 14V8a2.5 2.5 0 0 1 2.5-2.5Z" />
+          </svg>
+        </button>
+      </section>
+
+      <nav class="tabbar" aria-label="主导航">
+        <button class="active" type="button" data-tab="home">
+          <span class="tab-icon calendar-icon"></span>
+          首页
+        </button>
+        <button type="button" data-tab="stats">
+          <span class="tab-icon chart-icon"></span>
+          统计
+        </button>
+        <button type="button" data-tab="me">
+          <span class="tab-icon user-icon"></span>
+          <span id="meTabBadge" class="tab-badge" hidden></span>
+          我的
+        </button>
+      </nav>
+
+      <footer class="icp-footer">
+        <a href="https://beian.miit.gov.cn/" target="_blank" rel="noopener noreferrer">豫ICP备2026018655号</a>
+        <span class="footer-meta">版权所有 © 赞嗨传媒 · <span id="appVersion"></span></span>
+      </footer>
+    </div>
+
+    <script src="./app-v2.js"></script>
+    <script>
+      if ("serviceWorker" in navigator) {
+        window.addEventListener("load", () => {
+          navigator.serviceWorker.register("./sw.js").catch((err) => {
+            console.warn("Service worker register failed:", err);
+          });
+        });
+      }
+    </script>
+  </body>
+</html>

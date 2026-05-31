@@ -1,0 +1,14 @@
+{
+  "name": "faburicheng",
+  "version": "0.1.0",
+  "private": true,
+  "description": "短视频排期助手 · 后端",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js",
+    "check": "node --check server.js && node --check app-v2.js && node --check admin.js && node --check mp/pages/home/home.js && node --check mp/utils/state-ops.js"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}
